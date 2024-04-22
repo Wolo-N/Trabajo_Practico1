@@ -98,20 +98,28 @@ class ListaEnlazada:
 
 class MatrizRala:
     def __init__( self, M, N ):
+        # Inicializa una nueva instancia de la MatrizRala con dimensiones M x N.
+        # Se utiliza un diccionario para almacenar las filas de manera eficiente.
         self.filas = {}
-        self.shape = (M, N)
+        self.shape = (M, N)  # Guarda las dimensiones de la matriz como una tupla.
 
     def __getitem__(self, idx):
-        fila, columna = idx
+        # Método especial para obtener el valor de la matriz en el índice dado (fila, columna).
+        fila, columna = idx  # Desempaqueta el índice en fila y columna.
         if fila in self.filas and columna in self.filas[fila]:
+            # Si la fila y la columna existen en el diccionario, devuelve el valor correspondiente.
             return self.filas[fila][columna]
         else:
+            # Si no hay una entrada para la fila o la columna, devuelve 0 (asumiendo una matriz dispersa).
             return 0
     
     def __setitem__(self, idx, value):
-        fila, columna = idx
+        # Método especial para establecer el valor en el índice dado (fila, columna).
+        fila, columna = idx  # Desempaqueta el índice en fila y columna.
         if fila not in self.filas:
+            # Si la fila no existe en el diccionario, la crea.
             self.filas[fila] = {}
+        # Asigna el valor en la posición especificada en el diccionario.
         self.filas[fila][columna] = value
 
     def __mul__( self, k ):
