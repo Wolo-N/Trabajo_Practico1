@@ -101,17 +101,18 @@ class MatrizRala:
         self.filas = {}
         self.shape = (M, N)
 
-    def __getitem__( self, Idx ):
-        # COMPLETAR:
-        # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
-        return self[Idx[0],Idx[1]]
-        
+    def __getitem__(self, idx):
+        fila, columna = idx
+        if fila in self.filas and columna in self.filas[fila]:
+            return self.filas[fila][columna]
+        else:
+            return 0
     
-    def __setitem__( self, Idx, v ):
-        # COMPLETAR:
-        # Esta funcion implementa la asignacion durante indexacion ( Idx es una tupla (m,n) ) -> A[m,n] = v
-        self[Idx[0], Idx[1]] = v
-        pass
+    def __setitem__(self, idx, value):
+        fila, columna = idx
+        if fila not in self.filas:
+            self.filas[fila] = {}
+        self.filas[fila][columna] = value
 
     def __mul__( self, k ):
         # COMPLETAR:
