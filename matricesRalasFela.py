@@ -1,18 +1,18 @@
 # IMPORTANTE: Para importar estas clases en otro archivo (que se encuentre en la misma carpeta), escribir:
-# from matricesRalas import MatrizRala, GaussJordan 
+# from matricesRalas import MatrizRala, GaussJordan
 
 class ListaEnlazada:
     def __init__( self ):
         self.raiz = None
         self.longitud = 0
-        
+
         self.current = self.Nodo(None, self.raiz)
 
     def insertarFrente( self, valor ):
         # Inserta un elemento al inicio de la lista
         if len(self) == 0:
-            return self.push(valor)    
-    
+            return self.push(valor)
+
         nuevoNodo = self.Nodo( valor, self.raiz )
         self.raiz = nuevoNodo
         self.longitud += 1
@@ -31,14 +31,14 @@ class ListaEnlazada:
         # Inserta un elemento al final de la lista
         if self.longitud == 0:
             self.raiz = self.Nodo( valor, None )
-        else:      
+        else:
             nuevoNodo = self.Nodo( valor, None )
             ultimoNodo = self.nodoPorCondicion( lambda n: n.siguiente is None )
             ultimoNodo.siguiente = nuevoNodo
 
         self.longitud += 1
         return self
-    
+
     def pop( self ):
         # Elimina el ultimo elemento de la lista
         if len(self) == 0:
@@ -48,7 +48,7 @@ class ListaEnlazada:
         else:
             anteUltimoNodo = self.nodoPorCondicion( lambda n: n.siguiente.siguiente is None )
             anteUltimoNodo.siguiente = None
-        
+
         self.longitud -= 1
 
         return self
@@ -57,15 +57,15 @@ class ListaEnlazada:
         # Devuelve el primer nodo que satisface la funcion "funcionCondicion"
         if self.longitud == 0:
             raise IndexError('No hay nodos en la lista')
-        
+
         nodoActual = self.raiz
         while not funcionCondicion( nodoActual ):
             nodoActual = nodoActual.siguiente
             if nodoActual is None:
                 raise ValueError('Ningun nodo en la lista satisface la condicion')
-            
+
         return nodoActual
-        
+
     def __len__( self ):
         return self.longitud
 
@@ -79,7 +79,7 @@ class ListaEnlazada:
         else:
             self.current = self.current.siguiente
             return self.current.valor
-    
+
     def __repr__( self ):
         res = 'ListaEnlazada([ '
 
@@ -112,10 +112,10 @@ class MatrizRala:
         else:
             # Si no hay una entrada para la fila o la columna, devuelve 0 (asumiendo una matriz dispersa).
             return 0
-    
+
     def __setitem__(self, idx, value):
         # Método especial para establecer el valor en el índice dado (fila, columna).
-        
+
         fila, columna = idx  # Desempaqueta el índice en fila y columna.
         if fila not in self.filas:
             # Si la fila no existe en el diccionario, la crea.
@@ -147,13 +147,13 @@ class MatrizRala:
             for j in range(self.shape[1]):
                 res.__setitem__((i,j),self.__getitem__((i,j)) + other.__getitem__((i,j)))
         return res
-    
+
     def __sub__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa la resta de matrices (pueden usar suma y producto) -> A - B
         if self.shape[0] != other.shape[0] or self.shape[1] != other.shape[1]:
             print("Resta no valida")
-            return 
+            return
         res = MatrizRala(self.shape[0],self.shape[1])
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
@@ -182,7 +182,6 @@ class MatrizRala:
             res += '    [ '
             for j in range( self.shape[1] ):
                 res += str(self[i,j]) + ' '
-            
             res += ']\n'
 
         res += '])'
