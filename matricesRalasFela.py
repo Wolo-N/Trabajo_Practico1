@@ -160,22 +160,19 @@ class MatrizRala:
                 res.__setitem__((i,j),self.__getitem__((i,j)) - other.__getitem__((i,j)))
         return res
 
-    def __matmul__( self, other ):
-        # COMPLETAR:
-        # Esta funcion implementa el producto matricial (notado en Python con el operador "@" ) -> A @ B
+    def __matmul__(self, other):
+        # Implementa el producto matricial utilizando el operador '@' en Python.
+        # Verifica que el número de columnas en la primera matriz ('self') sea igual al número de filas en 'other'.
         if self.shape[1] != other.shape[0]:
-            print("Producto Matricial no valido")
             raise ValueError("Las dimensiones de las matrices no son compatibles para la multiplicación.")
-        print(self)
-        print(other)
+
         res = MatrizRala(self.shape[0], other.shape[1])
-        for w in range(other.shape[1]):
-            for j in range(self.shape[0]): # Largo de la fila de la matriz2.
+        for i in range(self.shape[0]):
+            for j in range(other.shape[1]):
                 suma = 0
-                for i in range(other.shape[0]): # Largo de la fila de la matriz1.
-                    suma += other[w, i] * self[i, j]
-                    print(other[w, i])
-                res.__setitem__((w, j), suma)
+                for k in range(self.shape[1]):
+                    suma += self[i, k] * other[k, j]
+                res[i, j] = suma
         print(res)
         return res
 
