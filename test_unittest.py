@@ -44,7 +44,7 @@ class TestSumaMatrices:
         B = MatrizRala(3,3)
         with pytest.raises(Exception) as e_info:
             C = A + B
-        
+
     def test_sumaCorrectamente( self ):
         A = MatrizRala(3,3)
         B = MatrizRala(3,3)

@@ -115,6 +115,7 @@ class MatrizRala:
     
     def __setitem__(self, idx, value):
         # Método especial para establecer el valor en el índice dado (fila, columna).
+        
         fila, columna = idx  # Desempaqueta el índice en fila y columna.
         if fila not in self.filas:
             # Si la fila no existe en el diccionario, la crea.
@@ -128,19 +129,19 @@ class MatrizRala:
         res = MatrizRala(self.shape[0], self.shape[1])
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
-                res.__setitem__((i,j),self.__getitem__((i,j))*k)
-        pass
-    
+                res.__setitem__((i,j), self.__getitem__((i,j))*k)
+        return res
+
     def __rmul__( self, k ):
         # Esta funcion implementa el producto escalar-matriz -> k * A
-        return self * k #mismo que poner self.__mul__(k)
+        return self * k # mismo que poner self.__mul__(k)
 
     def __add__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa la suma de matrices -> A + B
         if self.shape[0] != other.shape[0] or self.shape[1] != other.shape[1]:
             print("Resta no valida")
-            return 
+            raise Exception
         res = MatrizRala(self.shape[0],self.shape[1])
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
@@ -159,18 +160,25 @@ class MatrizRala:
                 res.__setitem__((i,j),self.__getitem__((i,j)) - other.__getitem__((i,j)))
         return res
 
-    
     def __matmul__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa el producto matricial (notado en Python con el operador "@" ) -> A @ B
         if self.shape[1] != other.shape[0]:
-            print("Multiplicacion no valida")
-            return
+            print("Producto Matricial no valido")
+            raise ValueError("Las dimensiones de las matrices no son compatibles para la multiplicación.")
+        print(self)
+        print(other)
         res = MatrizRala(self.shape[0], other.shape[1])
-        
-        ##completar lo que sigue que lo tiene luli :)         
+        for w in range(other.shape[1]):
+            for j in range(self.shape[0]): # Largo de la fila de la matriz2.
+                suma = 0
+                for i in range(other.shape[0]): # Largo de la fila de la matriz1.
+                    suma += other[w, i] * self[i, j]
+                    print(other[w, i])
+                res.__setitem__((w, j), suma)
+        print(res)
+        return res
 
-        
     def __repr__( self ):
         res = 'MatrizRala([ \n'
         for i in range( self.shape[0] ):
