@@ -101,7 +101,7 @@ class MatrizRala:
         self.filas = {}
         self.shape = (M, N)
 
-    def __getitem__(self, Idx):
+    """def __getitem__(self, Idx):
     # Esta función implementa la indexación (Idx es una tupla (m,n)) -> A[m,n]
     # tupla m = filas y n = columnas
         m, c = Idx
@@ -110,7 +110,20 @@ class MatrizRala:
             actual = fila.nodoPorCondicion(lambda n: n.valor[0] == c) # 
             return actual.valor[1]
         else:
-            return 0
+            return 0"""
+        
+    def __getitem__( self, Idx ):
+        # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
+        # tupla m= filas y n = columnas
+        m,c = Idx
+        if m in self.filas:
+            fila = self.filas[m]
+            actual = fila.raiz
+            while actual is not None:
+                if actual.valor[0] == c:
+                    return actual.valor[1]
+                actual = actual.siguiente
+        return 0
         
     def __setitem__(self, Idx, v):
         # Esta función implementa la asignación durante indexación (Idx es una tupla (m,n)) -> A[m,n] = v
@@ -143,10 +156,16 @@ class MatrizRala:
             fila.push((c, v))
             self.filas[m] = fila
 
-    def __mul__( self, k ):
-        # COMPLETAR:
-        # Esta funcion implementa el producto matriz-escalar -> A * k
-        pass
+    def __mul__(self, k):
+    # Esta función implementa el producto matriz-escalar -> A * k
+        matriz_resultado = MatrizRala(self.shape[0], self.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                valor = self[i,j] * k
+                if valor != 0:
+                    matriz_resultado[i,j] = valor  # Asignar el valor multiplicado a la matriz resultante
+        return matriz_resultado
+
     
     def __rmul__( self, k ):
         # Esta funcion implementa el producto escalar-matriz -> k * A
@@ -155,12 +174,29 @@ class MatrizRala:
     def __add__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa la suma de matrices -> A + B
-        pass
+        if self.shape[0] != other.shape[0] or self.shape[1] != other.shape[1]:
+            raise ValueError("Suma no valida")
+        res = MatrizRala(self.shape[0],self.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                suma = self[i,j] + other[i,j]
+                if suma != 0:
+                    res[i,j] = suma  # Asignar el valor multiplicado a la matriz resultante
+        return res
     
     def __sub__( self, other ):
-        # COMPLETAR:
-        # Esta funcion implementa la resta de matrices (pueden usar suma y producto) -> A - B
-        pass
+    # COMPLETAR:
+    # Esta funcion implementa la resta de matrices (pueden usar suma y producto) -> A - B
+        if self.shape[0] != other.shape[0] or self.shape[1] != other.shape[1]:
+            raise ValueError("Resta no valida")
+        res = MatrizRala(self.shape[0], self.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                resta = self[i, j] - other[i, j]
+                if resta != 0:
+                    res[i, j] = resta  # Asignar el valor de la resta solo si no es cero
+        return res
+
     
     def __matmul__( self, other ):
         # COMPLETAR:
