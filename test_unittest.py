@@ -124,3 +124,48 @@ class TestProductoMatricial:
         C1 = A @ Id
         C2 = Id @ A
         assert C1[0,0] == 1 and C1[0,2] == 3 and C1[1,2] == 4 and C2[0,0] == 1 and C2[0,2] == 3 and C2[1,2] == 4 and C1.shape == C2.shape and C1.shape == A.shape
+
+class TestGaussJordan:
+    def test_unique_solution(self):
+        # System: x + y = 2, 2x + y = 3
+        A = MatrizRala(2, 2)
+        A[0, 0] = 1  # x coefficient
+        A[0, 1] = 1  # y coefficient
+        A[1, 0] = 2
+        A[1, 1] = 1
+        b = [2, 3]  # Results vector
+        expected_solution = [1, 1]  # x = 1, y = 1
+        assert GaussJordan(A, b) == expected_solution, "Test for unique solution failed."
+
+    def test_no_solution(self):
+        # System: x + y = 2, x + y = 3 (clearly inconsistent)
+        A = MatrizRala(2, 2)
+        A[0, 0] = 1
+        A[0, 1] = 1
+        A[1, 0] = 1
+        A[1, 1] = 1
+        b = [2, 3]
+        with pytest.raises(ValueError):
+            GaussJordan(A, b)
+    
+    def test_dimension_mismatch(self):
+        # Dimension mismatch between A (2x2) and b (3x1)
+        A = MatrizRala(2, 2)
+        A[0, 0] = 1
+        A[0, 1] = 2
+        A[1, 0] = 3
+        A[1, 1] = 4
+        b = [1, 2, 3]
+        with pytest.raises(ValueError):
+            GaussJordan(A, b)
+
+    def test_singular_matrix(self):
+        # Test a singular matrix where determinant should be zero (no unique solution)
+        A = MatrizRala(2, 2)
+        A[0, 0] = 1
+        A[0, 1] = 2
+        A[1, 0] = 2
+        A[1, 1] = 4
+        b = [1, 2]
+        with pytest.raises(ValueError):
+            GaussJordan(A, b)

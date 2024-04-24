@@ -230,7 +230,49 @@ class MatrizRala:
 def GaussJordan( A, b ):
     # Hallar solucion x para el sistema Ax = b
     # Devolver error si el sistema no tiene solucion o tiene infinitas soluciones, con el mensaje apropiado
-    pass
+        # Verificar dimensiones
+    if A.shape[0] != len(b):
+        raise ValueError("Las dimensiones de A y b no son compatibles.")
+
+    n = A.shape[0]
+    M = MatrizRala(n, n + 1)  # Crear una nueva matriz para el sistema aumentado
+
+    # Construir la matriz aumentada
+    for i in range(n):
+        for j in range(n):
+            M[i, j] = A[i, j]
+        M[i, n] = b[i]  # La última columna es b
+
+    # Aplicar Gauss-Jordan
+    for i in range(n):
+        # Normalizar filas
+        if M[i, i] == 0:
+            # Buscar una fila para intercambiar que tenga un elemento no nulo en la columna i
+            for k in range(i + 1, n):
+                if M[k, i] != 0:
+                    M[i], M[k] = M[k], M[i]  # Intercambiar filas
+                    break
+            else:
+                raise ValueError("La matriz es singular y no se puede resolver.")
+
+        # Hacer que el elemento diagonal M[i, i] sea 1
+        divisor = M[i, i]
+        for j in range(n + 1):
+            M[i, j] /= divisor
+
+        # Hacer cero todos los elementos de la columna i, excepto el diagonal
+        for k in range(n):
+            if k != i:
+                factor = M[k, i]
+                for j in range(i, n + 1):
+                    M[k, j] -= factor * M[i, j]
+
+    # Extraer la solución
+    x = [0] * n
+    for i in range(n):
+        x[i] = M[i, n]
+
+    return x
 
 def main():
     a = MatrizRala(3,3)
