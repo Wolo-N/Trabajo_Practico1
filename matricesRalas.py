@@ -112,49 +112,49 @@ class MatrizRala:
         else:
             return 0"""
         
-    # def __getitem__( self, Idx ):
-    #     # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
-    #     # tupla m= filas y n = columnas
-    #     m,c = Idx
-    #     if m in self.filas:
-    #         fila = self.filas[m]
-    #         actual = fila.raiz
-    #         while actual is not None:
-    #             if actual.valor[0] == c:
-    #                 return actual.valor[1]
-    #             actual = actual.siguiente
-    #     return 0
+    def __getitem__( self, Idx ):
+        # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
+        # tupla m= filas y n = columnas
+        m,c = Idx
+        if m in self.filas:
+            fila = self.filas[m]
+            actual = fila.raiz
+            while actual is not None:
+                if actual.valor[0] == c:
+                    return actual.valor[1]
+                actual = actual.siguiente
+        return 0
         
-    # def __setitem__(self, Idx, v):
-    #     # Esta función implementa la asignación durante indexación (Idx es una tupla (m,n)) -> A[m,n] = v
-    #     m, c = Idx # m filas, c columnas
-    #     if m in self.filas:
-    #         fila = self.filas[m]
-    #         actual = fila.raiz
-    #         anterior = None
-    #         while actual is not None:
-    #             if actual.valor[0] == c:
-    #                 # Si la columna ya existe en la fila, actualizamos el valor
-    #                 actual.valor = (c, v)
-    #                 return 
-    #             elif actual.valor[0] > c:
-    #                 # Si encontramos una columna mayor que la que buscamos, insertamos el nuevo valor antes
-    #                 nuevo_nodo = ListaEnlazada.Nodo((c, v), actual)
-    #                 if anterior is None:
-    #                     fila.raiz = nuevo_nodo
-    #                 else:
-    #                     anterior.siguiente = nuevo_nodo
-    #                     nuevo_nodo.siguiente = actual  # Actualizamos el puntero siguiente del nuevo nodo
-    #                 return 
-    #             anterior = actual
-    #             actual = actual.siguiente
-    #         # Si la columna no existe en la fila, la insertamos al final de la fila
-    #         fila.insertarDespuesDeNodo((c, v), anterior)  # Pasamos el valor y el nodo anterior
-    #     else:
-    #         # Si la fila no existe, creamos una nueva fila con el valor asignado
-    #         fila = ListaEnlazada()
-    #         fila.push((c, v))
-    #         self.filas[m] = fila
+    def __setitem__(self, Idx, v):
+        # Esta función implementa la asignación durante indexación (Idx es una tupla (m,n)) -> A[m,n] = v
+        m, c = Idx # m filas, c columnas
+        if m in self.filas:
+            fila = self.filas[m]
+            actual = fila.raiz
+            anterior = None
+            while actual is not None:
+                if actual.valor[0] == c:
+                    # Si la columna ya existe en la fila, actualizamos el valor
+                    actual.valor = (c, v)
+                    return 
+                elif actual.valor[0] > c:
+                    # Si encontramos una columna mayor que la que buscamos, insertamos el nuevo valor antes
+                    nuevo_nodo = ListaEnlazada.Nodo((c, v), actual)
+                    if anterior is None:
+                        fila.raiz = nuevo_nodo
+                    else:
+                        anterior.siguiente = nuevo_nodo
+                        nuevo_nodo.siguiente = actual  # Actualizamos el puntero siguiente del nuevo nodo
+                    return 
+                anterior = actual
+                actual = actual.siguiente
+            # Si la columna no existe en la fila, la insertamos al final de la fila
+            fila.insertarDespuesDeNodo((c, v), anterior)  # Pasamos el valor y el nodo anterior
+        else:
+            # Si la fila no existe, creamos una nueva fila con el valor asignado
+            fila = ListaEnlazada()
+            fila.push((c, v))
+            self.filas[m] = fila
 
 
     def __mul__(self, k):
