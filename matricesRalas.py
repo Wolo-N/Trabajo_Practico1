@@ -230,48 +230,54 @@ class MatrizRala:
 def GaussJordan( A, b ):
     # Hallar solucion x para el sistema Ax = b
     # Devolver error si el sistema no tiene solucion o tiene infinitas soluciones, con el mensaje apropiado
-        # Verificar dimensiones
     if A.shape[0] != len(b):
-        raise ValueError("Las dimensiones de A y b no son compatibles.")
-
-    n = A.shape[0]
-    M = MatrizRala(n, n + 1)  # Crear una nueva matriz para el sistema aumentado
-
-    # Construir la matriz aumentada
-    for i in range(n):
-        for j in range(n):
+        raise ValueError("Los tamaños de b y A no son compatibles")
+    
+    M = MatrizRala(A.shape[0], A.shape[1]+1)
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
             M[i, j] = A[i, j]
-        M[i, n] = b[i]  # La última columna es b
+        M[i, A.shape[1]] = b[i]  # La última columna es b
+    print(M)
 
-    # Aplicar Gauss-Jordan
-    for i in range(n):
-        # Normalizar filas
-        if M[i, i] == 0:
-            # Buscar una fila para intercambiar que tenga un elemento no nulo en la columna i
-            for k in range(i + 1, n):
+    
+
+    for i in range(A.shape[0]): #fucking for de gauss-jordan
+        if M[i,i] == 0:
+            for k in range(i + 1, A.shape[1]):
                 if M[k, i] != 0:
                     M[i], M[k] = M[k], M[i]  # Intercambiar filas
                     break
-            else:
-                raise ValueError("La matriz es singular y no se puede resolver.")
+            if M[i,i] == 0:
+                if M[i, -1] == 0:
+                    raise ValueError("El sistema tiene infinitas soluciones.")
+                else:
+                    raise ValueError("El sistema no tiene solución.")
 
-        # Hacer que el elemento diagonal M[i, i] sea 1
         divisor = M[i, i]
-        for j in range(n + 1):
+        for j in range(A.shape[1] + 1):
             M[i, j] /= divisor
 
-        # Hacer cero todos los elementos de la columna i, excepto el diagonal
-        for k in range(n):
+        for k in range(A.shape[0]):
             if k != i:
                 factor = M[k, i]
-                for j in range(i, n + 1):
+                for j in range(i, A.shape[1] + 1):
                     M[k, j] -= factor * M[i, j]
 
-    # Extraer la solución
-    x = [0] * n
-    for i in range(n):
-        x[i] = M[i, n]
+    # Check for free variables by looking for rows that are all zeros except for the right-hand side
+    for i in range(A.shape[0]):
+        if all(M[i, j] == 0 for j in range(A.shape[1])) and M[i, A.shape[1]] != 0:
+            raise ValueError("El sistema no tiene solución.")
 
+    # Check if the number of pivots (non-zero leading terms) is less than the number of variables
+    pivot_count = sum(1 for i in range(min(A.shape[0], A.shape[1])) if M[i, i] != 0)
+    if pivot_count < A.shape[1]:
+        raise ValueError("El sistema tiene infinitas soluciones debido a las variables libres.")
+
+    x = [0] * A.shape[0]
+    for i in range(A.shape[0]):
+        x[i] = round(M[i, A.shape[0]])
+    print(x)
     return x
 
 def main():
