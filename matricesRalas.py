@@ -7,7 +7,7 @@ class ListaEnlazada:
         self.longitud = 0
         
         self.current = self.Nodo(None, self.raiz)
-
+ 
     def insertarFrente( self, valor ):
         # Inserta un elemento al inicio de la lista
         if len(self) == 0:
@@ -101,20 +101,72 @@ class MatrizRala:
         self.filas = {}
         self.shape = (M, N)
 
-    def __getitem__( self, Idx ):
-        # COMPLETAR:
-        # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
-        pass
-    
-    def __setitem__( self, Idx, v ):
-        # COMPLETAR:
-        # Esta funcion implementa la asignacion durante indexacion ( Idx es una tupla (m,n) ) -> A[m,n] = v
-        pass
+    """def __getitem__(self, Idx):
+    # Esta función implementa la indexación (Idx es una tupla (m,n)) -> A[m,n]
+    # tupla m = filas y n = columnas
+        m, c = Idx
+        if m in self.filas:
+            fila = self.filas[m]
+            actual = fila.nodoPorCondicion(lambda n: n.valor[0] == c) # 
+            return actual.valor[1]
+        else:
+            return 0"""
+        
+    # def __getitem__( self, Idx ):
+    #     # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
+    #     # tupla m= filas y n = columnas
+    #     m,c = Idx
+    #     if m in self.filas:
+    #         fila = self.filas[m]
+    #         actual = fila.raiz
+    #         while actual is not None:
+    #             if actual.valor[0] == c:
+    #                 return actual.valor[1]
+    #             actual = actual.siguiente
+    #     return 0
+        
+    # def __setitem__(self, Idx, v):
+    #     # Esta función implementa la asignación durante indexación (Idx es una tupla (m,n)) -> A[m,n] = v
+    #     m, c = Idx # m filas, c columnas
+    #     if m in self.filas:
+    #         fila = self.filas[m]
+    #         actual = fila.raiz
+    #         anterior = None
+    #         while actual is not None:
+    #             if actual.valor[0] == c:
+    #                 # Si la columna ya existe en la fila, actualizamos el valor
+    #                 actual.valor = (c, v)
+    #                 return 
+    #             elif actual.valor[0] > c:
+    #                 # Si encontramos una columna mayor que la que buscamos, insertamos el nuevo valor antes
+    #                 nuevo_nodo = ListaEnlazada.Nodo((c, v), actual)
+    #                 if anterior is None:
+    #                     fila.raiz = nuevo_nodo
+    #                 else:
+    #                     anterior.siguiente = nuevo_nodo
+    #                     nuevo_nodo.siguiente = actual  # Actualizamos el puntero siguiente del nuevo nodo
+    #                 return 
+    #             anterior = actual
+    #             actual = actual.siguiente
+    #         # Si la columna no existe en la fila, la insertamos al final de la fila
+    #         fila.insertarDespuesDeNodo((c, v), anterior)  # Pasamos el valor y el nodo anterior
+    #     else:
+    #         # Si la fila no existe, creamos una nueva fila con el valor asignado
+    #         fila = ListaEnlazada()
+    #         fila.push((c, v))
+    #         self.filas[m] = fila
 
-    def __mul__( self, k ):
-        # COMPLETAR:
-        # Esta funcion implementa el producto matriz-escalar -> A * k
-        pass
+
+    def __mul__(self, k):
+    # Esta función implementa el producto matriz-escalar -> A * k
+        matriz_resultado = MatrizRala(self.shape[0], self.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                valor = self[i,j] * k
+                if valor != 0:
+                    matriz_resultado[i,j] = valor  # Asignar el valor multiplicado a la matriz resultante
+        return matriz_resultado
+
     
     def __rmul__( self, k ):
         # Esta funcion implementa el producto escalar-matriz -> k * A
@@ -123,19 +175,45 @@ class MatrizRala:
     def __add__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa la suma de matrices -> A + B
-        pass
+        if self.shape[0] != other.shape[0] or self.shape[1] != other.shape[1]:
+            raise ValueError("Suma no valida")
+        res = MatrizRala(self.shape[0],self.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                suma = self[i,j] + other[i,j]
+                if suma != 0:
+                    res[i,j] = suma  # Asignar el valor multiplicado a la matriz resultante
+        return res
     
     def __sub__( self, other ):
-        # COMPLETAR:
-        # Esta funcion implementa la resta de matrices (pueden usar suma y producto) -> A - B
-        pass
+    # COMPLETAR:
+    # Esta funcion implementa la resta de matrices (pueden usar suma y producto) -> A - B
+        if self.shape[0] != other.shape[0] or self.shape[1] != other.shape[1]:
+            raise ValueError("Resta no valida")
+        res = MatrizRala(self.shape[0], self.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(self.shape[1]):
+                resta = self[i, j] - other[i, j]
+                if resta != 0:
+                    res[i, j] = resta  # Asignar el valor de la resta solo si no es cero
+        return res
+
     
     def __matmul__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa el producto matricial (notado en Python con el operador "@" ) -> A @ B
-        pass                
+        if self.shape[1] != other.shape[0]:
+            raise Exception
+        res = MatrizRala(self.shape[0], other.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(other.shape[1]):
+                suma = 0
+                for k in range(self.shape[1]):
+                    suma += self[i,k] * other[k,j]
+                res[i,j] = suma
+        return res
 
-        
+
     def __repr__( self ):
         res = 'MatrizRala([ \n'
         for i in range( self.shape[0] ):
@@ -154,7 +232,9 @@ def GaussJordan( A, b ):
     # Devolver error si el sistema no tiene solucion o tiene infinitas soluciones, con el mensaje apropiado
     pass
 
-
-
-
-
+def main():
+    a = MatrizRala(3,3)
+    print(a)
+    
+if __name__ == "__main__":
+    main()

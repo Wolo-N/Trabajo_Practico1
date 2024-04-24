@@ -1,9 +1,5 @@
-# Para correr los tests:
-#   1- Instalar pytest: ("pip install pytest")
-#   2- Correr en la terminal "pytest tests.py"
-
 import pytest
-from matricesRalasFela import MatrizRala
+from matricesRalas import MatrizRala
 import numpy as np
 
 class TestIndexacionMatrices:
@@ -58,6 +54,28 @@ class TestSumaMatrices:
 
         C = A+B
         assert C[0,0] == 1 and C[0,2] == 6 and C[2,2] == 4 and C[1,1] == 2
+        
+class TestRestaMatrices:
+    def test_distintasRestaDimensiones( self ):
+        A = MatrizRala(2,3)
+        B = MatrizRala(3,3)
+        with pytest.raises(Exception) as e_info:
+            C = A - B
+
+    def test_restaCorrectamente( self ):
+        A = MatrizRala(3,3)
+        B = MatrizRala(3,3)
+
+        A[0,0]=1
+        A[1,1]=4
+        A[0,2]=3
+        A[2,2]=4
+
+        B[0,2]=3
+        B[1,1]=2
+
+        C = A-B
+        assert C[0,0] == 1 and C[2,2] == 4 and C[1,1] == 2
 
 class TestProductoPorEscalar:
     def test_escalaCorrectamente( self ):
