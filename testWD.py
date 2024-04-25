@@ -1,3 +1,4 @@
+import numpy as np
 from matricesRalas import ListaEnlazada, MatrizRala, GaussJordan
 # a = 0
 # b = 1
@@ -78,3 +79,38 @@ for i in range(10):
 
 pestrella = GaussJordan(A,b)
 print(pestrella)
+
+# Definición de constantes
+d = 0.85
+N = 10
+
+# Construcción de la matriz A y el vector b
+identidad = matriz_identidad(10, 10)
+b = [((1 - d) / N) for _ in range(10)]
+
+A = (identidad - d * W @ D)
+
+# Resolución del sistema lineal utilizando Gauss-Jordan
+pestrella = GaussJordan(A, b)
+print("Solución del sistema lineal utilizando Gauss-Jordan:")
+print(pestrella)
+
+# Método iterativo de PageRank con distribución inicial equiprobable
+p_t = [1 / N for _ in range(10)]  # Distribución inicial equiprobable
+iterations = 0
+max_iterations = 1000
+tolerance = 1e-6
+errors = []
+
+# Iteraciones del método iterativo de PageRank
+while True:
+    p_t_plus_1 = [sum(d * W[j,i] * D[i,i] * p_t[i] for i in range(10)) + ((1 - d) / N) for j in range(10)]
+    error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(10))
+    errors.append(error)
+    if error < tolerance or iterations >= max_iterations:
+        break
+    p_t = p_t_plus_1
+    iterations += 1
+
+print("\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
+print(p_t)
