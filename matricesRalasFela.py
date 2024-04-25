@@ -143,13 +143,13 @@ class MatrizRala:
                     if anterior is None:
                         fila.raiz = nuevo_nodo
                     else:
-                        anterior.siguiente = nuevo_nodo
+                        fila.insertarDespuesDeNodo((c,v), anterior)
                         nuevo_nodo.siguiente = actual  # Actualizamos el puntero siguiente del nuevo nodo
                     return 
                 anterior = actual
                 actual = actual.siguiente
             # Si la columna no existe en la fila, la insertamos al final de la fila
-            fila.insertarDespuesDeNodo((c, v), anterior)  # Pasamos el valor y el nodo anterior
+            fila.push((c, v))  # Pasamos el valor y el nodo anterior
         else:
             # Si la fila no existe, creamos una nueva fila con el valor asignado
             fila = ListaEnlazada()
@@ -277,6 +277,8 @@ def GaussJordan(A, b):
     for i in range(A.shape[0]):
         x[i] = round(M[i, A.shape[1]])
     return x
+
+
 
 def main():
     a = MatrizRala(3,3)
