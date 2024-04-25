@@ -78,3 +78,20 @@ for i in range(10):
 
 pestrella = GaussJordan(A,b)
 print(pestrella)
+
+# Método iterativo de PageRank con distribución inicial equiprobable
+p_t = [1 / N for _ in range(N)]  # Distribución inicial equiprobable
+tolerance = 1e-6
+iterations = 0
+
+# Iteraciones del método iterativo de PageRank
+while True:
+    p_t_plus_1 = [sum(d * W[j,i] * D[i,i] * p_t[i] for i in range(N)) + ((1 - d) / N) for j in range(N)]
+    error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(N))
+    if error < tolerance:
+        break
+    p_t = p_t_plus_1
+    iterations += 1
+
+print("\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
+print(p_t)
