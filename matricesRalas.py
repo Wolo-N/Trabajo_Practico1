@@ -227,28 +227,27 @@ class MatrizRala:
 
         return res
 
-def GaussJordan( A, b ):
+def GaussJordan(A, b):
     # Hallar solucion x para el sistema Ax = b
     # Devolver error si el sistema no tiene solucion o tiene infinitas soluciones, con el mensaje apropiado
     if A.shape[0] != len(b):
         raise ValueError("Los tamaños de b y A no son compatibles")
-    
-    M = MatrizRala(A.shape[0], A.shape[1]+1)
+
+    M = MatrizRala(A.shape[0], A.shape[1] + 1)
     for i in range(A.shape[0]):
         for j in range(A.shape[1]):
             M[i, j] = A[i, j]
         M[i, A.shape[1]] = b[i]  # La última columna es b
-    print(M)
 
-    
-
-    for i in range(A.shape[0]): #fucking for de gauss-jordan
-        if M[i,i] == 0:
-            for k in range(i + 1, A.shape[1]):
+    for i in range(A.shape[0]):  # Gauss-Jordan elimination
+        if M[i, i] == 0:
+            for k in range(i + 1, A.shape[0]):
                 if M[k, i] != 0:
-                    M[i], M[k] = M[k], M[i]  # Intercambiar filas
+                    # Swap rows if necessary
+                    for j in range(A.shape[1] + 1):
+                        M[i, j], M[k, j] = M[k, j], M[i, j]  # Intercambiar filas
                     break
-            if M[i,i] == 0:
+            if M[i, i] == 0:
                 if M[i, -1] == 0:
                     raise ValueError("El sistema tiene infinitas soluciones.")
                 else:
@@ -276,8 +275,7 @@ def GaussJordan( A, b ):
 
     x = [0] * A.shape[0]
     for i in range(A.shape[0]):
-        x[i] = round(M[i, A.shape[0]])
-    print(x)
+        x[i] = M[i, A.shape[1]]
     return x
 
 def main():
