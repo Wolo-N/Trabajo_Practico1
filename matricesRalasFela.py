@@ -156,6 +156,7 @@ class MatrizRala:
             fila.push((c, v))
             self.filas[m] = fila
 
+
     def __mul__(self, k):
     # Esta función implementa el producto matriz-escalar -> A * k
         matriz_resultado = MatrizRala(self.shape[0], self.shape[1])
@@ -201,9 +202,18 @@ class MatrizRala:
     def __matmul__( self, other ):
         # COMPLETAR:
         # Esta funcion implementa el producto matricial (notado en Python con el operador "@" ) -> A @ B
-        pass                
+        if self.shape[1] != other.shape[0]:
+            raise Exception
+        res = MatrizRala(self.shape[0], other.shape[1])
+        for i in range(self.shape[0]):
+            for j in range(other.shape[1]):
+                suma = 0
+                for k in range(self.shape[1]):
+                    suma += self[i,k] * other[k,j]
+                res[i,j] = suma
+        return res
 
-        
+
     def __repr__( self ):
         res = 'MatrizRala([ \n'
         for i in range( self.shape[0] ):
@@ -217,7 +227,60 @@ class MatrizRala:
 
         return res
 
-def GaussJordan( A, b ):
+def GaussJordan(A, b):
     # Hallar solucion x para el sistema Ax = b
     # Devolver error si el sistema no tiene solucion o tiene infinitas soluciones, con el mensaje apropiado
-    pass
+    if A.shape[0] != len(b):
+        raise ValueError("Los tamaños de b y A no son compatibles")
+
+    M = MatrizRala(A.shape[0], A.shape[1] + 1)
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            M[i, j] = A[i, j]
+        M[i, A.shape[1]] = b[i]  # La última columna es b
+
+    for i in range(A.shape[0]):  # Gauss-Jordan elimination
+        if M[i, i] == 0:
+            for k in range(i + 1, A.shape[0]):
+                if M[k, i] != 0:
+                    # Swap rows if necessary
+                    for j in range(A.shape[1] + 1):
+                        M[i, j], M[k, j] = M[k, j], M[i, j]  # Intercambiar filas
+                    break
+            if M[i, i] == 0:
+                if M[i, -1] == 0:
+                    raise ValueError("El sistema tiene infinitas soluciones.")
+                else:
+                    raise ValueError("El sistema no tiene solución.")
+
+        divisor = M[i, i]
+        for j in range(A.shape[1] + 1):
+            M[i, j] /= divisor
+
+        for k in range(A.shape[0]):
+            if k != i:
+                factor = M[k, i]
+                for j in range(i, A.shape[1] + 1):
+                    M[k, j] -= factor * M[i, j]
+
+    # Check for free variables by looking for rows that are all zeros except for the right-hand side
+    for i in range(A.shape[0]):
+        if all(M[i, j] == 0 for j in range(A.shape[1])) and M[i, A.shape[1]] != 0:
+            raise ValueError("El sistema no tiene solución.")
+
+    # Check if the number of pivots (non-zero leading terms) is less than the number of variables
+    pivot_count = sum(1 for i in range(min(A.shape[0], A.shape[1])) if M[i, i] != 0)
+    if pivot_count < A.shape[1]:
+        raise ValueError("El sistema tiene infinitas soluciones debido a las variables libres.")
+
+    x = [0] * A.shape[0]
+    for i in range(A.shape[0]):
+        x[i] = round(M[i, A.shape[1]])
+    return x
+
+def main():
+    a = MatrizRala(3,3)
+    print(a)
+    
+if __name__ == "__main__":
+    main()
