@@ -1,4 +1,3 @@
-import numpy as np
 from matricesRalas import ListaEnlazada, MatrizRala, GaussJordan
 # a = 0
 # b = 1
@@ -80,37 +79,35 @@ for i in range(10):
 pestrella = GaussJordan(A,b)
 print(pestrella)
 
-# Definición de constantes
-d = 0.85
-N = 10
-
-# Construcción de la matriz A y el vector b
-identidad = matriz_identidad(10, 10)
-b = [((1 - d) / N) for _ in range(10)]
-
-A = (identidad - d * W @ D)
-
-# Resolución del sistema lineal utilizando Gauss-Jordan
-pestrella = GaussJordan(A, b)
-print("Solución del sistema lineal utilizando Gauss-Jordan:")
-print(pestrella)
-
 # Método iterativo de PageRank con distribución inicial equiprobable
-p_t = [1 / N for _ in range(10)]  # Distribución inicial equiprobable
-iterations = 0
-max_iterations = 1000
+N = 10  # Assuming N is the number of pages
+d = 0.85  # Damping factor, typically set to 0.85
+p_t = [1 / N for _ in range(N)]  # Initial equiprobable distribution
 tolerance = 1e-6
-errors = []
+iterations = 0
+errores = []
 
-# Iteraciones del método iterativo de PageRank
 while True:
-    p_t_plus_1 = [sum(d * W[j,i] * D[i,i] * p_t[i] for i in range(10)) + ((1 - d) / N) for j in range(10)]
-    error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(10))
-    errors.append(error)
-    if error < tolerance or iterations >= max_iterations:
+    p_t_plus_1 = []
+    for j in range(N):
+        # Calculate the PageRank for page j
+        page_rank_sum = 0
+        for i in range(N):
+            page_rank_sum += d * W[j, i] * D[i, i] * p_t[i]
+        page_rank_sum += (1 - d) / N
+        p_t_plus_1.append(page_rank_sum)
+    
+    # Calculate the error for this iteration
+    error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(N))
+    errores.append(error)
+
+    # Break the loop if the error is less than the tolerance
+    if error < tolerance:
         break
-    p_t = p_t_plus_1
+    
+    p_t = p_t_plus_1  # Update the current PageRank vector
     iterations += 1
 
-print("\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
+print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
 print(p_t)
+print("\n\nErrores en cada iteración:", errores)
