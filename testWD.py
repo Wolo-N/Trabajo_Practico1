@@ -111,3 +111,6 @@ while True:
 print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
 print(p_t)
 print("\n\nErrores en cada iteración:", errores)
+
+
+
