@@ -80,8 +80,8 @@ pestrella = GaussJordan(A,b)
 print(pestrella)
 
 # Método iterativo de PageRank con distribución inicial equiprobable
-N = 10  # Assuming N is the number of pages
-d = 0.85  # Damping factor, typically set to 0.85
+N = 10  
+d = 0.85 
 p_t = [1 / N for _ in range(N)]  # Initial equiprobable distribution
 tolerance = 1e-6
 iterations = 0
@@ -93,7 +93,7 @@ while True:
         # Calculate the PageRank for page j
         page_rank_sum = 0
         for i in range(N):
-            page_rank_sum += d * W[j, i] * D[i, i] * p_t[i]
+            page_rank_sum += (d * (W @ D)[j, i]) * p_t[i]
         page_rank_sum += (1 - d) / N
         p_t_plus_1.append(page_rank_sum)
     
