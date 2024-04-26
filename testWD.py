@@ -108,12 +108,11 @@ while True:
     p_t = p_t_plus_1  # Update the current PageRank vector
     iterations += 1
 
-<<<<<<< HEAD
 print("\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
 print(p_t)
 # Método iterativo de PageRank con distribución inicial equiprobable
-N = 10  
-d = 0.85 
+N = 10
+d = 0.85
 p_t = [1 / N for _ in range(N)]  # Initial equiprobable distribution
 tolerance = 1e-6
 iterations = 0
@@ -128,7 +127,7 @@ while True:
             page_rank_sum += (d * (W @ D)[j, i]) * p_t[i]
         page_rank_sum += (1 - d) / N
         p_t_plus_1.append(page_rank_sum)
-    
+
     # Calculate the error for this iteration
     error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(N))
     errores.append(error)
@@ -136,7 +135,7 @@ while True:
     # Break the loop if the error is less than the tolerance
     if error < tolerance:
         break
-    
+
     p_t = p_t_plus_1  # Update the current PageRank vector
     iterations += 1
 
@@ -146,8 +145,6 @@ print("\n\nErrores en cada iteración:", errores)
 
 
 
-=======
 print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
 print(p_t)
 print("\n\nErrores en cada iteración:", errores)
->>>>>>> 64144cf746ed656f33aa4eec3f84b8ee81e5eda3
