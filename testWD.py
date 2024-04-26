@@ -80,18 +80,34 @@ pestrella = GaussJordan(A,b)
 print(pestrella)
 
 # Método iterativo de PageRank con distribución inicial equiprobable
-p_t = [1 / N for _ in range(N)]  # Distribución inicial equiprobable
+N = 10  
+d = 0.85 
+p_t = [1 / N for _ in range(N)]  # Initial equiprobable distribution
 tolerance = 1e-6
 iterations = 0
+errores = []
 
-# Iteraciones del método iterativo de PageRank
 while True:
-    p_t_plus_1 = [sum(d * W[j,i] * D[i,i] * p_t[i] for i in range(N)) + ((1 - d) / N) for j in range(N)]
+    p_t_plus_1 = []
+    for j in range(N):
+        # Calculate the PageRank for page j
+        page_rank_sum = 0
+        for i in range(N):
+            page_rank_sum += (d * (W @ D)[j, i]) * p_t[i]
+        page_rank_sum += (1 - d) / N
+        p_t_plus_1.append(page_rank_sum)
+    
+    # Calculate the error for this iteration
     error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(N))
+    errores.append(error)
+
+    # Break the loop if the error is less than the tolerance
     if error < tolerance:
         break
-    p_t = p_t_plus_1
+    
+    p_t = p_t_plus_1  # Update the current PageRank vector
     iterations += 1
 
-print("\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
+print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
 print(p_t)
+print("\n\nErrores en cada iteración:", errores)
