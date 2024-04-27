@@ -37,8 +37,11 @@ def cargar_papers():
 def genW(lista_citas, lista_papers):
     W = MatrizRala(len(lista_papers),len(lista_papers))
     for citador, cita in lista_citas:
+        print("Valores de citador y cita:", citador, cita)  # Agregar este print para rastrear los valores
         W[citador, cita] = 1
+    print("Valores de citador y cita después del bucle:", citador, cita)  # Agregar este print para verificar los valores al salir del bucle
     return W
+
 
 def genD(W):
     D = MatrizRala(W.shape[0], W.shape[1])
@@ -55,6 +58,7 @@ def genD(W):
     return D
 
 def matriz_de_unos(n,m):
+    # Inicializamos la matriz de uno 
     matriz = MatrizRala(n,m)
     for i in range(matriz.shape[0]):
         for j in range(matriz.shape[1]):
@@ -62,11 +66,13 @@ def matriz_de_unos(n,m):
     return matriz
 
 def P_it(d,N,W,D):
-    p_t = MatrizRala(N,1)     # Initial equiprobable distribution
+    p_t = MatrizRala(N,1)
     for i in range(N):
         p_t[i,0] = 1/N
 
+    #print(p_t) ¿porqué nos da lo mismo?
     tolerance = 1e-6
+    #print(tolerance)
     errores = []
     error = 1
 
@@ -90,7 +96,6 @@ def P_it(d,N,W,D):
 
 
 def main():
-    
     # Llamar a la función y pasar la ruta al archivo CSV
     lista_citas = cargar_citas_csv()
     #print(lista_citas)  # Imprimir la lista de citas para verificar
@@ -101,8 +106,9 @@ def main():
     N = len(lista_papers)
     d = 0.85
 
-# Calculate PageRank vector
+    # Calculate PageRank vector
     page_ranks = P_it(d, N, W, D)
+    #print(page_ranks)
 
     # Prepare list of (paper_id, paper_title, PageRank score) tuples
     papers_scores = [(lista_papers[i][0], lista_papers[i][1], page_ranks[i, 0]) for i in range(N)]  # Assuming paper ID is the first element and title is the second
@@ -114,8 +120,6 @@ def main():
     print("Top 10 Papers by PageRank:")
     for rank, (paper_id, title, score) in enumerate(sorted_papers[:10], start=1):
         print(f"{rank}. Paper ID: {paper_id}, Title: \"{title}\", Score: {score}")
-
-
 
 if __name__ == "__main__":
     main()
