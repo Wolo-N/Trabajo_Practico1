@@ -87,6 +87,15 @@ class TestProductoPorEscalar:
         C = A * 13
         assert C[0,0] == (1*13) and C[0,2] == (3*13) and C[2,2] == (4*13)
 
+    def test_escalaCorrectamente2( self ):
+        A = MatrizRala(3,3)
+        A[0,0]=1
+        A[0,2]=3
+        A[2,2]=4
+
+        C = 13 * A
+        assert C[0,0] == (1*13) and C[0,2] == (3*13) and C[2,2] == (4*13)
+
 class TestProductoMatricial:
     def test_dimensionesEquivocadas(self):
         A = MatrizRala(2,3)

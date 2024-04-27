@@ -167,7 +167,6 @@ class MatrizRala:
                     matriz_resultado[i,j] = valor  # Asignar el valor multiplicado a la matriz resultante
         return matriz_resultado
 
-    
     def __rmul__( self, k ):
         # Esta funcion implementa el producto escalar-matriz -> k * A
         return self * k
@@ -277,6 +276,25 @@ def GaussJordan(A, b):
     for i in range(A.shape[0]):
         x[i] = M[i, A.shape[1]]
     return x
+
+def suma_matriz_constante(matriz, constante):
+    # Suma de una constante a cada elemento
+    result = MatrizRala(matriz.shape)
+    for i in range(matriz.shape[0]):
+        for j in range(matriz.shape[1]):
+            result[i, j] = matriz[i, j] + constante
+    return result
+
+
+def multiplicar_matriz_vector(matriz, vector):
+    resultado = [0] * len(vector)
+    for i in range(len(vector)):
+        suma = 0
+        for j in range(len(vector)):
+            suma += matriz[i, j] * vector[j]
+        resultado[i] = suma
+    return resultado
+
 
 def main():
     a = MatrizRala(3,3)
