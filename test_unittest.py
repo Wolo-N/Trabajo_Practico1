@@ -1,5 +1,5 @@
 import pytest
-from matricesRalasFela import MatrizRala, GaussJordan
+from matricesRalas import MatrizRala, GaussJordan
 import numpy as np
 
 class TestIndexacionMatrices:
