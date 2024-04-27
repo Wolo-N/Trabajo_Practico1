@@ -158,13 +158,15 @@ class MatrizRala:
 
 
     def __mul__(self, k):
-    # Esta función implementa el producto matriz-escalar -> A * k
+        # Esta función implementa el producto matriz-escalar -> A * k
         matriz_resultado = MatrizRala(self.shape[0], self.shape[1])
-        for i in range(self.shape[0]):
-            for j in range(self.shape[1]):
-                valor = self[i,j] * k
-                if valor != 0:
-                    matriz_resultado[i,j] = valor  # Asignar el valor multiplicado a la matriz resultante
+        for i in (self.filas):
+                actual = self.filas[i].raiz
+                while actual is not None:
+                    valor = self[i,actual.valor[0]] * k
+                    if valor != 0:
+                        matriz_resultado[i,actual.valor[0]] = valor  # Asignar el valor multiplicado a la matriz resultante
+                    actual = actual.siguiente
         return matriz_resultado
 
     
@@ -205,12 +207,21 @@ class MatrizRala:
         if self.shape[1] != other.shape[0]:
             raise Exception
         res = MatrizRala(self.shape[0], other.shape[1])
-        for i in range(self.shape[0]):
-            for j in range(other.shape[1]):
-                suma = 0
-                for k in range(self.shape[1]):
-                    suma += self[i,k] * other[k,j]
-                res[i,j] = suma
+            # Iterate only over non-zero elements in self
+        for i in self.filas:
+            if i in self.filas:
+                current_row = self.filas[i].raiz
+                while current_row is not None:
+                    k = current_row.valor[0]  # Column index in self which corresponds to row index in other
+                    if k in other.filas:
+                        current_col = other.filas[k].raiz
+                        while current_col is not None:
+                            j = current_col.valor[0]  # Column index in other
+                            # Multiply and add to the corresponding element in result
+                            res[i, j] += self[i, k] * other[k, j]
+                            current_col = current_col.siguiente
+                    current_row = current_row.siguiente
+
         return res
 
 

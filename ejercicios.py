@@ -10,6 +10,7 @@ def cargar_citas_csv():
         for cita, citado in lector_citas:
             lista_citas.append((cita,citado))
     return lista_citas
+
 def cargar_papers():
     archivo_papers = "papers/papers.csv"
     # Lista para almacenar los datos de los papers
@@ -34,8 +35,7 @@ def cargar_papers():
 
 
 def genW(lista_citas, lista_papers):
-    len_lista_papers = len(lista_papers)
-    W = MatrizRala(len_lista_papers,len_lista_papers)
+    W = MatrizRala(len(lista_papers),len(lista_papers))
     for citador, cita in lista_citas:
         W[citador, cita] = 1
     return W
@@ -72,16 +72,12 @@ def P_it(d,N,W,D):
 
     mat_unos = matriz_de_unos(N,1)
     unoMenosDeSobreEne = ((1-d)/N) * mat_unos
-    print(1)
     d_W = d * W
-    print(2)
     d_WD = d_W @ D
-    print(3)
 
 
     while error > tolerance:
         # Multiplica la matriz W_D por el vector p_t y escala por d
-        print('hola')
         p_t_plus_1 = d_WD @ p_t
         p_t_plus_1 = unoMenosDeSobreEne + p_t_plus_1
         # Calcula el error máximo en esta iteración comparando el nuevo vector de PageRank con el anterior
@@ -105,12 +101,19 @@ def main():
     N = len(lista_papers)
     d = 0.85
 
-    # Get the top 10 papers
-    top_papers = P_it(d, N, W, D)[:10]
-    for i, paper in enumerate(top_papers, start=1):
-        print(f"Top {i}: Paper ID {paper[0]} with PageRank score {paper[1]}")
+# Calculate PageRank vector
+    page_ranks = P_it(d, N, W, D)
 
+    # Prepare list of (paper_id, paper_title, PageRank score) tuples
+    papers_scores = [(lista_papers[i][0], lista_papers[i][1], page_ranks[i, 0]) for i in range(N)]  # Assuming paper ID is the first element and title is the second
 
+    # Sort papers by PageRank score in descending order
+    sorted_papers = sorted(papers_scores, key=lambda x: x[2], reverse=True)
+
+    # Print the top 10 papers
+    print("Top 10 Papers by PageRank:")
+    for rank, (paper_id, title, score) in enumerate(sorted_papers[:10], start=1):
+        print(f"{rank}. Paper ID: {paper_id}, Title: \"{title}\", Score: {score}")
 
 
 
