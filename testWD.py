@@ -11,7 +11,9 @@ from matricesRalas import ListaEnlazada, MatrizRala, GaussJordan, multiplicar_ma
 # j = 9
 # k = 10
 
-w = MatrizRala(10,10)
+len_letras = 11
+
+w = MatrizRala(len_letras,len_letras)
 
 assignments = {
     (1, 0): 1, (5, 0): 1, (6, 0): 1, # B, F y G citan a A
@@ -29,7 +31,9 @@ def build_w(matriz, citas):
         w[indices] = value
     return w
 
+
 W = build_w(w, assignments)
+print(W)
 
 def build_d(matriz_w):
     D = MatrizRala(matriz_w.shape[0], matriz_w.shape[1])
@@ -64,14 +68,14 @@ D = build_d(W)
 
 # (identidad - d*W*D)*pestrella = (1-d)/N * 1|
 # d = 0.85
-matriz_identidad = matriz_identidad(10,10)
+matriz_identidad = matriz_identidad(len_letras,len_letras)
 
 d = 0.85
-N = 10
+N = len_letras
 
 A = (matriz_identidad - (d*W)@D)
 b = []
-for i in range(10):
+for i in range(len_letras):
     b.append((1 - d)/N)
 
 pestrella = GaussJordan(A,b)
@@ -105,7 +109,6 @@ def P_it(d,N,W,D):
         p_t = p_t_plus_1
     return p_t, errores
 
-pIt, errores = P_it(0.85,10,W,D)
-print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:", p_t)
-
+pIt, errores = P_it(0.85,len_letras,W,D)
+print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:", pIt)
 print("\n\nErrores en cada iteración:", errores)

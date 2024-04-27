@@ -1,4 +1,5 @@
 import csv
+import time
 
 from matricesRalas import MatrizRala
 
@@ -7,8 +8,10 @@ def cargar_citas_csv():
     lista_citas = []
     with open(archivo_citas, newline='', encoding='utf-8') as csvfile:
         lector_citas = csv.reader(csvfile)
+        next(lector_citas)  # Skip the header row
         for cita, citado in lector_citas:
-            lista_citas.append((cita,citado))
+            if int(citado) < 79008 and int(cita) < 79008:
+                lista_citas.append((int(cita),int(citado)))
     return lista_citas
 
 def cargar_papers():
@@ -36,22 +39,28 @@ def cargar_papers():
 
 def genW(lista_citas, lista_papers):
     W = MatrizRala(len(lista_papers),len(lista_papers))
+    contador =0
     for citador, cita in lista_citas:
-        W[citador, cita] = 1
+        if citador < len(lista_papers) and cita < len(lista_papers):
+            W[citador, cita] = 1
+            contador+=1
+    print(contador)
     return W
 
 def genD(W):
     D = MatrizRala(W.shape[0], W.shape[1])
-    
-    for i in range(W.shape[1]):
+
+    for i in W.filas:  # Iterate only through indices that have rows initialized
         cj = 0
-        if i in W.filas:
-            for j in range(W.shape[0]):
-                cj += W[j,i]
-        if cj != 0:
-            D[i,i] = 1 if (round(1/cj, 3) == 1) else round(1/cj , 3)
-        else:
-            D[i,i] = 0
+        current_node = W.filas[i].raiz
+        while current_node:
+            cj += current_node.valor[1] # Assume that valor is a tuple (column_index, value)
+            current_node = current_node.siguiente
+        if cj == 1:
+            D[i, i] = 1
+        elif cj > 1:
+            D[i, i] = 1/cj
+
     return D
 
 def matriz_de_unos(n,m):
@@ -86,33 +95,37 @@ def P_it(d,N,W,D):
 
         # Actualiza el vector de PageRank para la próxima iteración
         p_t = p_t_plus_1
-    return p_t
+    return p_t, errores
 
 
 def main():
     
     # Llamar a la función y pasar la ruta al archivo CSV
     lista_citas = cargar_citas_csv()
+    print(len(lista_citas))
     #print(lista_citas)  # Imprimir la lista de citas para verificar
     lista_papers = cargar_papers()
 
     W = genW(lista_citas,lista_papers)
+    
     D = genD(W)
     N = len(lista_papers)
     d = 0.85
 
-# Calculate PageRank vector
     page_ranks = P_it(d, N, W, D)
-    # Prepare list of (paper_id, paper_title, PageRank score) tuples
-    papers_scores = [(lista_papers[i][0], lista_papers[i][1], page_ranks[i, 0]) for i in range(N)]  # Assuming paper ID is the first element and title is the second
+    print(D[41943, 41943])
+    print(D[72257, 72257])
 
-    # Sort papers by PageRank score in descending order
-    sorted_papers = sorted(papers_scores, key=lambda x: x[2], reverse=True)
-
-    # Print the top 10 papers
-    print("Top 10 Papers by PageRank:")
-    for rank, (paper_id, title, score) in enumerate(sorted_papers[:10], start=1):
-        print(f"{rank}. Paper ID: {paper_id}, Title: \"{title}\", Score: {score}")
+    
+    lista = []
+    for i in range(79008):
+        lista.append((page_ranks[0][i,0],i))
+    
+    maxi = []
+    for i in range(10):
+        maxi.append(max(lista))
+        lista.remove(max(lista))
+    print(maxi)
 
 
 
