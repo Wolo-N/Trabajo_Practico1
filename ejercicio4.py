@@ -103,7 +103,6 @@ def main():
 
 # Calculate PageRank vector
     page_ranks = P_it(d, N, W, D)
-
     # Prepare list of (paper_id, paper_title, PageRank score) tuples
     papers_scores = [(lista_papers[i][0], lista_papers[i][1], page_ranks[i, 0]) for i in range(N)]  # Assuming paper ID is the first element and title is the second
 

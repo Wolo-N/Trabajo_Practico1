@@ -1,4 +1,4 @@
-from matricesRalas import ListaEnlazada, MatrizRala, GaussJordan, multiplicar_matriz_vector, suma_matriz_constante
+from matricesRalas import ListaEnlazada, MatrizRala, GaussJordan, multiplicar_matriz_vector
 # a = 0
 # b = 1
 # c = 2
@@ -77,67 +77,35 @@ for i in range(10):
 pestrella = GaussJordan(A,b)
 print(pestrella)
 
-# Define variables iniciales
-# N = 10
-# d = 0.85
-# p_t = [1 / N for _ in range(N)]  # Distribución inicial equiprobable de PageRank
 
-# tolerance = 1e-6  # Tolerancia para el criterio de parada del algoritmo
-# errores = []
-# error = 1
+def P_it(d,N,W,D):
+    p_t = MatrizRala(N,1)     # Initial equiprobable distribution
+    for i in range(N):
+        p_t[i,0] = 1/N
 
-# matriz_de_unoss = matriz_de_unos(10,10)
+    tolerance = 1e-6
+    errores = []
+    error = 1
 
-# while error > tolerance:
-#     p_t_plus_1 = []  # Lista para almacenar los nuevos valores de PageRank
-#     for j in range(N):
-#         # Calcula el PageRank para la página j
-#         page_rank_sum = 0
-#         for i in range(N):
-#             # Suma contribuciones de todas las páginas i a la página j
-#             page_rank_sum += (d * (W @ D)) * p_t
-#         # Añade la probabilidad de teletransporte (reinicio aleatorio)
-#         page_rank_sum += ((1 - d) / N ) * matriz_de_unoss
-#         p_t_plus_1.append(page_rank_sum)
-
-#     # Calcula el error máximo en esta iteración comparando el nuevo vector de PageRank con el anterior
-#     error = max(abs(p_t_plus_1[i] - p_t[i]) for i in range(N))
-#     errores.append(error)  # Añade el error a la lista de errores
-
-#     p_t = p_t_plus_1  # Actualiza el vector de PageRank para la próxima iteración
-
-# print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
-# print(p_t)
-# print("\n\nErrores en cada iteración:", errores)
-
-N = 10
-d = 0.85
-p_t = MatrizRala(N,1)     # Initial equiprobable distribution
-for i in range(N):
-    p_t[i,0] = 1/N
-
-tolerance = 1e-6
-errores = []
-error = 1
-
-mat_unos = matriz_de_unos(N,1)
-unoMenosDeSobreEne = ((1-d)/N) * mat_unos
-
-d_W = d * W
-d_WD = d_W @ D
+    mat_unos = matriz_de_unos(N,1)
+    unoMenosDeSobreEne = ((1-d)/N) * mat_unos
+    d_W = d * W
+    d_WD = d_W @ D
 
 
-while error > tolerance:
-    # Multiplica la matriz W_D por el vector p_t y escala por d
-    p_t_plus_1 = d_WD @ p_t
-    p_t_plus_1 = unoMenosDeSobreEne + p_t_plus_1
-    # Calcula el error máximo en esta iteración comparando el nuevo vector de PageRank con el anterior
-    error = max(abs(p_t_plus_1[i,0] - p_t[i,0]) for i in range(N))
-    errores.append(error)
+    while error > tolerance:
+        # Multiplica la matriz W_D por el vector p_t y escala por d
+        p_t_plus_1 = d_WD @ p_t
+        p_t_plus_1 = unoMenosDeSobreEne + p_t_plus_1
+        # Calcula el error máximo en esta iteración comparando el nuevo vector de PageRank con el anterior
+        error = max(abs(p_t_plus_1[i,0] - p_t[i,0]) for i in range(N))
+        errores.append(error)
 
-    # Actualiza el vector de PageRank para la próxima iteración
-    p_t = p_t_plus_1
+        # Actualiza el vector de PageRank para la próxima iteración
+        p_t = p_t_plus_1
+    return p_t, errores
 
-print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:")
-print(p_t)
+pIt, errores = P_it(0.85,10,W,D)
+print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:", p_t)
+
 print("\n\nErrores en cada iteración:", errores)
