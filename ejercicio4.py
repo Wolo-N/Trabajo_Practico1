@@ -10,8 +10,7 @@ def cargar_citas_csv():
         lector_citas = csv.reader(csvfile)
         next(lector_citas)  # Skip the header row
         for cita, citado in lector_citas:
-            if int(citado) < 79008 and int(cita) < 79008:
-                lista_citas.append((int(cita),int(citado)))
+            lista_citas.append((int(cita),int(citado)))
     return lista_citas
 
 def cargar_papers():
@@ -29,9 +28,9 @@ def cargar_papers():
             # Añadir cada fila como un diccionario a la lista
             lista_papers.append([
                 fila['id'],
-                fila['title'],
-                fila['authors'],
-                fila['year']
+                fila['titulo'],
+                fila['autores'],
+                fila['anio']
             ])
 
     return lista_papers
@@ -39,12 +38,9 @@ def cargar_papers():
 
 def genW(lista_citas, lista_papers):
     W = MatrizRala(len(lista_papers),len(lista_papers))
-    contador =0
     for citador, cita in lista_citas:
         if citador < len(lista_papers) and cita < len(lista_papers):
             W[citador, cita] = 1
-            contador+=1
-    print(contador)
     return W
 
 def genD(W):
@@ -102,8 +98,6 @@ def main():
     
     # Llamar a la función y pasar la ruta al archivo CSV
     lista_citas = cargar_citas_csv()
-    print(len(lista_citas))
-    #print(lista_citas)  # Imprimir la lista de citas para verificar
     lista_papers = cargar_papers()
 
     W = genW(lista_citas,lista_papers)
@@ -113,20 +107,17 @@ def main():
     d = 0.85
 
     page_ranks = P_it(d, N, W, D)
-    print(D[41943, 41943])
-    print(D[72257, 72257])
-
     
-    lista = []
-    for i in range(79008):
-        lista.append((page_ranks[0][i,0],i))
-    
-    maxi = []
-    for i in range(10):
-        maxi.append(max(lista))
-        lista.remove(max(lista))
-    print(maxi)
+    # Create list of (PageRank score, index)
+    lista = [(page_ranks[0][i, 0], i) for i in range(len(lista_papers))]
 
+    # Sort by PageRank score in descending order
+    sorted_papers = sorted(lista, key=lambda x: x[0], reverse=True)
+
+    # Print the top 10 papers with podium ranking
+    print("Top 10 Papers by PageRank:")
+    for rank, (score, index) in enumerate(sorted_papers[:10], start=1):
+        print(f"{rank}. Paper ID: {lista_papers[index][0]}, Title: \"{lista_papers[index][1]}\", Score: {score:.6f}")
 
 
 if __name__ == "__main__":
