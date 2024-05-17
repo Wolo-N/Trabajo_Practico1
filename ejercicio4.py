@@ -19,9 +19,9 @@ def cargar_papers():
         for fila in reader:
             lista_papers.append([
                 fila['id'],  # Tratar como cadena
-                fila['title'],
-                fila['authors'],
-                int(fila['year'])  # Convertir a entero
+                fila['titulo'],
+                fila['autores'],
+                int(fila['anio'])  # Convertir a entero
             ])
     return lista_papers
 
@@ -35,9 +35,13 @@ def genW(lista_citas, lista_papers):
     return W
 
 def genD(W):
-    D = np.diag(np.sum(W, axis=0))
-    D_inv = np.linalg.inv(D)
-    return D_inv
+    N = W.shape[0]
+    D = np.zeros((N, N))
+    for i in range(N):
+        suma_columna = np.sum(W[:, i])
+        if suma_columna != 0:
+            D[i, i] = 1 / suma_columna
+    return D
 
 def P_it(d, N, W, D):
     p_t = np.ones((N, 1)) / N

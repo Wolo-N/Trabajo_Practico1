@@ -1,4 +1,4 @@
-from matricesRalas import MatrizRala, GaussJordan
+from matricesRalas import ListaEnlazada, MatrizRala, GaussJordan, multiplicar_matriz_vector
 # a = 0
 # b = 1
 # c = 2
@@ -11,7 +11,9 @@ from matricesRalas import MatrizRala, GaussJordan
 # j = 9
 # k = 10
 
-w = MatrizRala(11,11)
+len_letras = 11
+
+w = MatrizRala(len_letras,len_letras)
 
 assignments = {
     (1, 0): 1, (5, 0): 1, (6, 0): 1, # B, F y G citan a A
@@ -29,7 +31,9 @@ def build_w(matriz, citas):
         w[indices] = value
     return w
 
+
 W = build_w(w, assignments)
+print(W)
 
 def build_d(matriz_w):
     D = MatrizRala(matriz_w.shape[0], matriz_w.shape[1])
@@ -64,28 +68,30 @@ D = build_d(W)
 
 # (identidad - d*W*D)*pestrella = (1-d)/N * 1|
 # d = 0.85
-matriz_identidad = matriz_identidad(11,11)
+matriz_identidad = matriz_identidad(len_letras,len_letras)
 
 d = 0.85
-N = 10
+N = len_letras
 
 A = (matriz_identidad - (d*W)@D)
-b = []
-for i in range(11):
-    b.append((1 - d)/N)
+b = MatrizRala(len_letras,1)
+for i in range(len_letras):
+    b[i,0]= (1 - d)/N
 
 pestrella = GaussJordan(A,b)
 print(pestrella)
+suma = 0 
+for i in range(len_letras):
+    suma = suma + pestrella[i,0]
+print("la suma de pestrella da: ", suma)
 
 
 def P_it(d,N,W,D):
-    p_t = MatrizRala(N,1)
+    p_t = MatrizRala(N,1)     # Initial equiprobable distribution
     for i in range(N):
         p_t[i,0] = 1/N
 
-    #print(p_t) ¿porqué nos da lo mismo para todos?
     tolerance = 1e-6
-    #print(tolerance)
     errores = []
     error = 1
 
@@ -105,45 +111,8 @@ def P_it(d,N,W,D):
 
         # Actualiza el vector de PageRank para la próxima iteración
         p_t = p_t_plus_1
-    return p_t
+    return p_t, errores
 
-def main():
-    # Define variables iniciales
-    N = 11
-    d = 0.85
-
-    # Construir matriz W
-    w = MatrizRala(N, N)
-    assignments = {
-        (1, 0): 1, (5, 0): 1, (6, 0): 1, # B, F y G citan a A
-        (0, 2): 1,
-        (0, 3): 1, (0, 4): 1,
-        (8, 5): 1,
-        (5, 6): 1,
-        (6, 7): 1,
-        (6, 8): 1, (7, 8): 1, (9, 8): 1,
-        (4, 10): 1
-    }
-    W = build_w(w, assignments)
-
-    # Construir matriz D
-    D = build_d(W)
-
-    # Calcular PageRank vector
-    page_ranks = P_it(d, N, W, D)
-
-    # Preparar lista de tuplas (paper_id, paper_title, PageRank score)
-    # Aquí simplemente vamos a utilizar un rango de 1 a N como IDs de los papers, ya que no se proporciona una lista de papers.
-    papers_scores = [(str(i+1), f"Paper {i+1}", page_ranks[i, 0]) for i in range(N)]
-
-    # Ordenar papers por PageRank score en orden descendente
-    sorted_papers = sorted(papers_scores, key=lambda x: x[2], reverse=True)
-
-    # Imprimir los 10 mejores papers según PageRank
-    print("Top 10 Papers by PageRank:")
-    for rank, (paper_id, title, score) in enumerate(sorted_papers[:10], start=1):
-        print(f"{rank}. Paper ID: {paper_id}, Title: \"{title}\", Score: {score}")
-
-if __name__ == "__main__":
-    main()
-
+pIt, errores = P_it(0.85,len_letras,W,D)
+print("\n\nMétodo iterativo de PageRank con distribución inicial equiprobable:", pIt)
+print("\n\nErrores en cada iteración:", errores)
