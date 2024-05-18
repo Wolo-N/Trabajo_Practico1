@@ -70,10 +70,9 @@ D = build_d(W)
 
 # (identidad - d*W*D)*pestrella = (1-d)/N * 1|
 # d = 0.85
-matriz_identidad = matriz_identidad(len_letras,len_letras)
-
 d = 0.85
 N = len_letras
+matriz_identidad = matriz_identidad(len_letras,len_letras)
 
 A = (matriz_identidad - (d*W)@D)
 b = MatrizRala(len_letras,1)
@@ -85,11 +84,11 @@ print(pestrella)
 suma = 0 
 for i in range(len_letras):
     suma = suma + pestrella[i,0]
-print("la suma de pestrella da: ", suma)
+#print("la suma de pestrella da: ", suma)
 
 
 def P_it(d,N,W,D):
-    p_t = MatrizRala(N,1)     # Initial equiprobable distribution
+    p_t = MatrizRala(N,1)
     for i in range(N):
         p_t[i,0] = 1/N
 
