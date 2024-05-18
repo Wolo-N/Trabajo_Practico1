@@ -99,6 +99,9 @@ class MatrizRala:
     def __init__( self, M, N ):
         self.filas = {}
         self.shape = (M, N)
+    
+    def __len__(self):
+        return self.filas
 
     def __getitem__( self, Idx ):
         # Esta funcion implementa la indexacion ( Idx es una tupla (m,n) ) -> A[m,n]
